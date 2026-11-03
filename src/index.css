@@ -1,10 +1,110 @@
 @import "tailwindcss";
 
-html {
-  scroll-behavior: smooth;
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #030712;
+    color: #f8fafc;
+    overflow-x: hidden;
+  }
 }
 
-body {
-  background-color: #020617;
-  color: #f8fafc;
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #030712;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1f2937;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #374151;
+}
+
+/* Infinite Marquee Animation */
+@keyframes marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  display: flex;
+  width: max-content;
+  animation: marquee 32s linear infinite;
+}
+
+.pause-on-hover:hover {
+  animation-play-state: paused;
+}
+
+/* 3D Perspective Tilt Card Effects */
+.perspective-container {
+  perspective: 1000px;
+}
+
+.tilt-card {
+  transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.tilt-card:hover {
+  transform: perspective(1000px) translateY(-5px) rotateX(2.5deg) rotateY(-2deg) scale(1.01);
+  box-shadow: 0 20px 35px -10px rgba(99, 102, 241, 0.25), 0 0 20px rgba(168, 85, 247, 0.15);
+  border-color: rgba(99, 102, 241, 0.6);
+}
+
+/* Glass & Glow */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glow-gradient {
+  background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.12) 0%, transparent 70%);
+}
+
+/* Floating Bug Bounce */
+@keyframes bugWiggle {
+  0%, 100% {
+    transform: translateY(0) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-8px) rotate(-8deg);
+  }
+  75% {
+    transform: translateY(6px) rotate(8deg);
+  }
+}
+
+.animate-bug-wiggle {
+  animation: bugWiggle 2.5s ease-in-out infinite;
+}
+
+/* Radar Scan Keyframes */
+@keyframes radarSweep {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-radar-sweep {
+  animation: radarSweep 2s linear infinite;
 }

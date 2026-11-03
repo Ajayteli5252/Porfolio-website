@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Terminal as TerminalIcon, X, Sparkles, Send } from "lucide-react";
+import { Terminal as TerminalIcon, X, Sparkles, Send, Coffee } from "lucide-react";
 import confetti from "canvas-confetti";
 import { PROFILE_DATA, SKILLS_DATA, INITIAL_PROJECTS } from "../data/initialData";
 
-export default function DevTerminal({ isOpen, onClose, onBugSquashed }) {
+export default function DevTerminal({ isOpen, onClose, onBugSquashed, onDrinkChai }) {
   const [input, setInput] = useState("");
   const [history, setHistory] = useState([
     {
       type: "output",
-      text: "Welcome to Ajay Teli's Interactive Dev Terminal v2.7.0",
+      text: "Welcome to Ajay Teli's Interactive Dev Terminal v2.8.0",
     },
     {
       type: "output",
@@ -49,22 +49,24 @@ export default function DevTerminal({ isOpen, onClose, onBugSquashed }) {
       case "help": {
         newHistory.push({
           type: "output",
-          text: `Available commands:\n  • skills       - View core programming stack & databases\n  • projects     - List featured full-stack & AI projects\n  • contact      - Get email, phone & social links\n  • hire-ajay    - Trigger celebratory confetti & contact info\n  • clear        - Clear terminal screen\n  • exit         - Close terminal window`,
+          text: `Available commands:\n  • skills       - View core programming stack & databases\n  • projects     - List featured full-stack & AI projects\n  • contact      - Get email, phone & social links\n  • chai         - Brew a cup of Kadak Chai (boost velocity!)\n  • hire-ajay    - Trigger celebratory confetti & VIP interview access\n  • clear        - Clear terminal screen\n  • exit         - Close terminal window`,
         });
         break;
       }
 
       case "skills": {
-        const skillList = SKILLS_DATA.map((s) => s.name).join(", ");
+        const skillList = SKILLS_DATA.map((s) => `${s.name} (${s.level}%)`).join(", ");
         newHistory.push({
           type: "output",
-          text: `Technical Arsenal: ${skillList}`,
+          text: `Technical Arsenal:\n${skillList}`,
         });
         break;
       }
 
       case "projects": {
-        const projList = INITIAL_PROJECTS.map((p) => `• ${p.title} (${p.year})`).join("\n");
+        const projList = INITIAL_PROJECTS.map(
+          (p) => `• ${p.title} (${p.year}) - [${p.badge}]\n  Stack: ${p.tech.join(", ")}`
+        ).join("\n");
         newHistory.push({
           type: "output",
           text: `Featured Projects:\n${projList}`,
@@ -75,7 +77,16 @@ export default function DevTerminal({ isOpen, onClose, onBugSquashed }) {
       case "contact": {
         newHistory.push({
           type: "output",
-          text: `Email: ${PROFILE_DATA.email}\nPhone: ${PROFILE_DATA.phone}\nGitHub: ${PROFILE_DATA.links.github}\nLinkedIn: ${PROFILE_DATA.links.linkedin}`,
+          text: `Direct Candidate Contact:\n  Email:    ${PROFILE_DATA.email}\n  Phone:    ${PROFILE_DATA.phone}\n  GitHub:   ${PROFILE_DATA.links.github}\n  LinkedIn: ${PROFILE_DATA.links.linkedin}`,
+        });
+        break;
+      }
+
+      case "chai": {
+        if (onDrinkChai) onDrinkChai();
+        newHistory.push({
+          type: "output",
+          text: `☕ Kadak Chai consumed! Developer velocity overclocked by +20%. Keep the code shipping!`,
         });
         break;
       }
@@ -83,14 +94,15 @@ export default function DevTerminal({ isOpen, onClose, onBugSquashed }) {
       case "hire-ajay":
       case "sudo hire-ajay": {
         confetti({
-          particleCount: 100,
-          spread: 70,
+          particleCount: 120,
+          spread: 80,
           origin: { y: 0.6 },
+          colors: ["#6366f1", "#a855f7", "#10b981", "#f59e0b"],
         });
         if (onBugSquashed) onBugSquashed();
         newHistory.push({
           type: "output",
-          text: `🎉 EXCELLENT CHOICE! Ajay is ready for Full-Stack & AI Engineering roles.\nReach out directly at ${PROFILE_DATA.email} or call ${PROFILE_DATA.phone}.`,
+          text: `🎉 EXCELLENT CHOICE! Ajay is primed for Full-Stack & AI Engineering roles.\nReach out directly at ${PROFILE_DATA.email} or call ${PROFILE_DATA.phone}.`,
         });
         break;
       }
@@ -118,8 +130,8 @@ export default function DevTerminal({ isOpen, onClose, onBugSquashed }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4">
-      <div className="w-full max-w-2xl rounded-2xl bg-slate-950 border border-slate-700 shadow-2xl overflow-hidden flex flex-col h-[450px]">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-sm p-4 animate-in fade-in">
+      <div className="w-full max-w-2xl rounded-2xl bg-slate-950 border border-slate-700 shadow-2xl overflow-hidden flex flex-col h-[460px]">
         {/* Terminal Header */}
         <div className="px-4 py-3 bg-slate-900 border-b border-slate-800 flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -144,12 +156,13 @@ export default function DevTerminal({ isOpen, onClose, onBugSquashed }) {
           {history.map((item, idx) => (
             <div
               key={idx}
-              className={`whitespace-pre-wrap leading-relaxed ${item.type === "input"
+              className={`whitespace-pre-wrap leading-relaxed ${
+                item.type === "input"
                   ? "text-indigo-400 font-semibold"
                   : item.type === "error"
-                    ? "text-rose-400"
-                    : "text-slate-200"
-                }`}
+                  ? "text-rose-400"
+                  : "text-slate-200"
+              }`}
             >
               {item.text}
             </div>
@@ -169,7 +182,7 @@ export default function DevTerminal({ isOpen, onClose, onBugSquashed }) {
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Type a command (e.g., help, skills, hire-ajay)..."
+            placeholder="Type 'help', 'skills', 'chai', 'hire-ajay'..."
             autoFocus
             className="flex-1 bg-transparent border-none text-white font-mono text-xs focus:outline-none"
           />
