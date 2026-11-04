@@ -155,8 +155,8 @@ export default function ProjectManager({
           </p>
         </div>
 
-        {/* Admin Controls */}
-        {isAdmin ? (
+        {/* Admin Controls (Only visible when unlocked) */}
+        {isAdmin && (
           <div className="flex flex-wrap items-center gap-2.5">
             <button
               onClick={handleOpenAdd}
@@ -174,11 +174,6 @@ export default function ProjectManager({
               Reset Defaults
             </button>
           </div>
-        ) : (
-          <p className="text-xs text-slate-400">
-            Unlock <span className="text-indigo-400 font-semibold">Admin</span>{" "}
-            in top navbar (PIN: 2027) to customize or add projects.
-          </p>
         )}
       </div>
 

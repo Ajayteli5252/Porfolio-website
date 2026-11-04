@@ -7,13 +7,15 @@ import ProjectManager from "./components/ProjectManager";
 import ExperienceAndEdu from "./components/ExperienceAndEdu";
 import ContactSection from "./components/ContactSection";
 import DevTerminal from "./components/DevTerminal";
+import AdminModal from "./components/AdminModal";
 import { INITIAL_PROJECTS, PROFILE_DATA } from "./data/initialData";
-import { Bug, Sparkles, Coffee, Terminal, ArrowUp } from "lucide-react";
+import { Bug, Sparkles, Coffee, Terminal, ArrowUp, ShieldCheck, Settings, Lock } from "lucide-react";
 import confetti from "canvas-confetti";
 
 export default function App() {
   const [isHonestMode, setIsHonestMode] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdminModalOpen, setIsAdminModalOpen] = useState(false);
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
   const [bugsSquashed, setBugsSquashed] = useState(0);
   const [chaiCount, setChaiCount] = useState(2);
@@ -54,6 +56,18 @@ export default function App() {
     };
     window.addEventListener("mousemove", handleMouseMove);
     return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  // Secret Keyboard Shortcut to open Admin Console: Ctrl + Shift + A or Alt + A
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") || (e.altKey && e.key.toLowerCase() === "a")) {
+        e.preventDefault();
+        setIsAdminModalOpen(true);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
   // Random bug position & floating feedback popups
@@ -143,12 +157,11 @@ export default function App() {
       <Navbar
         isHonestMode={isHonestMode}
         setIsHonestMode={setIsHonestMode}
-        isAdmin={isAdmin}
-        setIsAdmin={setIsAdmin}
         bugsSquashed={bugsSquashed}
         chaiCount={chaiCount}
         onDrinkChai={handleDrinkChai}
         onOpenTerminal={() => setIsTerminalOpen(true)}
+        onTriggerAdminModal={() => setIsAdminModalOpen(true)}
       />
 
       {/* Infinite Tech Stack & Achievements Marquee Banner */}
@@ -257,6 +270,31 @@ export default function App() {
         </div>
       ))}
 
+      {/* Floating Admin Active Pill (ONLY visible when YOU unlock Admin mode) */}
+      {isAdmin && (
+        <div className="fixed top-20 right-6 z-40 flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-900/95 border border-emerald-500/50 text-emerald-300 text-xs shadow-2xl backdrop-blur-md animate-in fade-in">
+          <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <span className="font-semibold">Admin Active</span>
+          <button
+            onClick={() => setIsAdminModalOpen(true)}
+            className="p-1 rounded-md hover:bg-slate-800 text-slate-300 hover:text-white transition cursor-pointer"
+            title="Admin Settings / Change PIN"
+          >
+            <Settings className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => {
+              setIsAdmin(false);
+              showToast("🔒 Admin Mode Locked.");
+            }}
+            className="p-1 rounded-md hover:bg-rose-500/20 text-rose-400 transition cursor-pointer"
+            title="Lock Admin Mode"
+          >
+            <Lock className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
+
       {/* Witty Toast Notifications */}
       {toastMessage && (
         <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 rounded-2xl bg-slate-900/95 border border-indigo-500/50 text-white text-xs font-medium shadow-2xl flex items-center gap-2 animate-in fade-in slide-in-from-bottom-4 duration-200">
@@ -271,6 +309,16 @@ export default function App() {
         onClose={() => setIsTerminalOpen(false)}
         onBugSquashed={handleSquashBug}
         onDrinkChai={handleDrinkChai}
+        onTriggerAdminModal={() => setIsAdminModalOpen(true)}
+      />
+
+      {/* Secret Developer Admin Modal */}
+      <AdminModal
+        isOpen={isAdminModalOpen}
+        onClose={() => setIsAdminModalOpen(false)}
+        isAdmin={isAdmin}
+        setIsAdmin={setIsAdmin}
+        onShowToast={showToast}
       />
     </div>
   );

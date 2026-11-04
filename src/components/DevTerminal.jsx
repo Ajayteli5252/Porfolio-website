@@ -3,7 +3,13 @@ import { Terminal as TerminalIcon, X, Sparkles, Send, Coffee } from "lucide-reac
 import confetti from "canvas-confetti";
 import { PROFILE_DATA, SKILLS_DATA, INITIAL_PROJECTS } from "../data/initialData";
 
-export default function DevTerminal({ isOpen, onClose, onBugSquashed, onDrinkChai }) {
+export default function DevTerminal({
+  isOpen,
+  onClose,
+  onBugSquashed,
+  onDrinkChai,
+  onTriggerAdminModal
+}) {
   const [input, setInput] = useState("");
   const [history, setHistory] = useState([
     {
@@ -87,6 +93,17 @@ export default function DevTerminal({ isOpen, onClose, onBugSquashed, onDrinkCha
         newHistory.push({
           type: "output",
           text: `☕ Kadak Chai consumed! Developer velocity overclocked by +20%. Keep the code shipping!`,
+        });
+        break;
+      }
+
+      case "admin":
+      case "sudo admin":
+      case "sudo su": {
+        if (onTriggerAdminModal) onTriggerAdminModal();
+        newHistory.push({
+          type: "output",
+          text: "🔐 Developer Admin Console opened. Authenticate via dialog.",
         });
         break;
       }
